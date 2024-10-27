@@ -1,6 +1,7 @@
 ## ДЗ - 1
 
 1. Создаем пользователя hadoop без прав sudo
+
 ```sudo adduser hadoop```
 
 2. Переключаемся на этого пользователя
@@ -20,7 +21,9 @@
 6. Копируем authorized_keys на каждую машину
 
 ```scp .ssh/authorized_keys hadoop@192.168.1.75:/home/hadoop/.ssh/authorized_keys```
+
 ```scp .ssh/authorized_keys hadoop@192.168.1.76:/home/hadoop/.ssh/authorized_keys```
+
 ```scp .ssh/authorized_keys hadoop@192.168.1.77:/home/hadoop/.ssh/authorized_keys```
 
 7. Скачиваем дистрибутив Hadoop 3.4.0 на jump node
@@ -30,5 +33,7 @@
 8. Отправляем дистрибутив на каждую машину
 
 ```scp hadoop-3.4.0-src.tar.gz hadoop@192.168.1.75:/home/hadoop/hadoop-3.4.0-src.tar.gz```
+
 ```scp hadoop-3.4.0-src.tar.gz hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0-src.tar.gz```
+
 ```scp hadoop-3.4.0-src.tar.gz hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0-src.tar.gz```
