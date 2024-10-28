@@ -28,12 +28,99 @@
 
 7. Скачиваем дистрибутив Hadoop 3.4.0 на jump node
 
-```wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0-src.tar.gz```
+```wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz```
 
 8. Отправляем дистрибутив на каждую машину
 
-```scp hadoop-3.4.0-src.tar.gz hadoop@192.168.1.75:/home/hadoop/hadoop-3.4.0-src.tar.gz```
+```scp hadoop-3.4.0.tar.gz hadoop@192.168.1.75:/home/hadoop/hadoop-3.4.0.tar.gz```
 
-```scp hadoop-3.4.0-src.tar.gz hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0-src.tar.gz```
+```scp hadoop-3.4.0.tar.gz hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0.tar.gz```
 
-```scp hadoop-3.4.0-src.tar.gz hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0-src.tar.gz```
+```scp hadoop-3.4.0.tar.gz hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0.tar.gz```
+
+
+9. Разархивируем дистрибутив Hadoop 3.4.0 на всех нодах
+
+```tar -xvzf hadoop-3.4.0.tar.gz```
+
+10. На NameNode добавим переменные окружения в файл ~/.profile
+
+```
+export HADOOP_HOME=/home/hadoop/hadoop-3.4.0
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+```
+
+11. Копируем profile на дата ноды
+
+```scp ~/.profile hadoop@192.168.1.76:/home/hadoop/.profile```
+
+```scp ~/.profile hadoop@192.168.1.77:/home/hadoop/.profile```
+
+12. Активируем переменные командой
+
+```source ~/.profile```
+
+13. Добавим переменную окружения в файл hadoop-3.4.0/etc/hadoop/hadoop-env.sh на всех нодах
+
+```JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64```
+
+14. Скопируем отредактированный файл окружения на все дата ноды
+
+```scp hadoop-3.4.0/etc/hadoop/hadoop-env.sh hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/hadoop-env.sh```
+
+```scp hadoop-3.4.0/etc/hadoop/hadoop-env.sh hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/hadoop-env.sh```
+
+15. Добавим property в конфигурационный файл NameNode `hadoop-3.4.0/etc/hadoop/core-site.xml`
+
+```
+<configuration>
+        <property>
+                <name>fs.defaultFS</name>
+                <value>hdfs://team-18-nn:9000</value>
+        </property>
+</configuration>
+```
+
+16. Добавим property в конфигурационный файл NameNode `hadoop-3.4.0/etc/hadoop/hdfs-site.xml`
+
+```
+<configuration>
+        <property>
+                <name>dfs.replication</name>
+                <value>3</value>
+        </property>
+</configuration>
+```
+
+
+17. Добавим хосты в конфигурационный файл NameNode `hadoop-3.4.0/etc/hadoop/workers`
+
+```
+team-18-nn
+team-18-dn-00
+team-18-dn-01
+```
+
+18. Скопируем созданные файлы на дата ноды
+
+```
+scp hadoop-3.4.0/etc/hadoop/core-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/core-site.xml && \
+scp hadoop-3.4.0/etc/hadoop/core-site.xml hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/core-site.xml && \
+scp hadoop-3.4.0/etc/hadoop/hdfs-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/hdfs-site.xml && \
+scp hadoop-3.4.0/etc/hadoop/hdfs-site.xml hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/hdfs-site.xml && \
+scp hadoop-3.4.0/etc/hadoop/workers hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/workers && \
+scp hadoop-3.4.0/etc/hadoop/workers hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/workers
+
+```
+
+18. Форматируем файловую систему NameNode
+
+```
+hadoop-3.4.0/bin/hdfs namenode -format
+```
+
+19. Запустим dfs
+
+```hadoop-3.4.0/sbin/start-dfs.sh```
+
