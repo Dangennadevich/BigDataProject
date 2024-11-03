@@ -8,17 +8,25 @@
 
 ```sudo -i -u hadoop```
 
-3. Cоздаем ssh ключ и сохраняем его публичную часть
+3. Cоздаем ssh ключ и сохраняем его публичную часть (заранее скопируем публичные ключи к себе локально для шага 5)
 
 ```ssh-keygen```
 
 4. Повторяем п.1 - п.3 для каждой машины (nn, dn-00, dn-01)
+Для этого от пользователя `team` по очереди подключаемся к каждой машине с jump node
+```ssh team@192.168.1.75```
+```ssh team@192.168.1.76```
+```ssh team@192.168.1.77```
 
 5. На jump node создаем файл, куда запишем все публичные shh ключи сгенерированный ранее
 
-```.ssh/authorized_keys```
+```touch .ssh/authorized_keys```
+```nano .ssh/authorized_keys```
 
 6. Копируем authorized_keys на каждую машину
+Переключаемся на пользователя `hadoop`
+
+```sudo -i -u hadoop```
 
 ```scp .ssh/authorized_keys hadoop@192.168.1.75:/home/hadoop/.ssh/authorized_keys```
 
@@ -37,7 +45,7 @@
 ```scp hadoop-3.4.0.tar.gz hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0.tar.gz```
 
 ```scp hadoop-3.4.0.tar.gz hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0.tar.gz```
-
+ 
 
 9. Разархивируем дистрибутив Hadoop 3.4.0 на всех нодах
 
@@ -93,13 +101,34 @@ export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 </configuration>
 ```
 
-
 17. Добавим хосты в конфигурационный файл NameNode `hadoop-3.4.0/etc/hadoop/workers`
 
 ```
 team-18-nn
 team-18-dn-00
 team-18-dn-01
+```
+
+18. Добавим хосты в `/etc/hosts` под пользователем `team`
+
+```sudo nano /etc/hosts```
+
+для `team-18-nn`
+```
+192.168.1.76 team-18-dn-00
+192.168.1.77 team-18-dn-01
+```
+
+для `team-18-dn-00`
+```
+192.168.1.75 team-18-nn
+192.168.1.77 team-18-dn-01
+```
+
+для `team-18-dn-01`
+```
+192.168.1.75 team-18-nn
+192.168.1.76 team-18-dn-00
 ```
 
 18. Скопируем созданные файлы на дата ноды
@@ -123,4 +152,3 @@ hadoop-3.4.0/bin/hdfs namenode -format
 19. Запустим dfs
 
 ```hadoop-3.4.0/sbin/start-dfs.sh```
-
