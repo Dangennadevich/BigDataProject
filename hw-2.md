@@ -65,7 +65,7 @@ server {
 ``` 
 
 3. (team:jn) Включаем nginx для nn, перезапускаем nginx. Nginx Должен 
-стать доступным локально по адресу jump node: http://176.109.91.20:9870/  
+стать доступным локально по адресу: http://127.0.0.1:9870
 
 ```sudo ln -s /etc/nginx/sites-available/nn /etc/nginx/sites-enabled/nn```
 
@@ -268,6 +268,8 @@ server {
         #}
 }
 
+```
+
 12. (team:jn) Включаем хосты
 
 ```
@@ -285,19 +287,16 @@ sudo systemctl reload nginx
 14. Проверяем доступность Yarn и history server
 
 ```
-http://176.109.91.20:19888/
+http://127.0.0.1:19888/
 
-http://176.109.91.20:8088/
+http://127.0.0.1:8088/
 ```
 
 15. (hadoop:nn) Останавливаем сервисы (hostory server, Yarn, распределенную файловую систему)
 
 ``` 
-cd hadoop-3.4.0
+hadoop-3.4.0/sbin/stop-all.sh
 
 mapred --daemon stop historyserver
 
-sbin/stop-yarn.sh
-
-sbin/stop-dfs.sh
 ``` 
