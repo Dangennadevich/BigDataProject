@@ -40,3 +40,30 @@
   </property>
 ```
 
+8. (hadoop:jn) Скопируем env файл из теймплейта
+
+```cp apache-hive-4.0.1-bin/conf/hive-env.sh.template apache-hive-4.0.1-bin/conf/hive-env.sh```
+
+9. (hadoop:jn) Добавим в конфиг переменные окружения
+
+```
+export HIVE_HOME=/home/hadoop/apache-hive-4.0.1-bin
+export HIVE_CONF_DIR=$HIVE_HOME/conf
+export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib/*
+```
+
+10. (team:nn) Устанавливаем Postgresql
+
+```sudo apt install postgresql postgresql-contrib```
+
+11. (team:nn) Переключаемся на пользователя postgres
+
+```sudo -i -u postgres```
+
+12. (postgres:nn) Создаем базу данных и пользователя для работы с ней
+
+```psql```
+```CREATE DATABASE metastore;```
+```CREATE USER hive with password 'hive';```
+```GRANT ALL PRIVILEGES ON DATABASE "metastore" to hive;```
+```ALTER DATABASE metastore OWNER TO hive;```
