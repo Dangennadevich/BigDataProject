@@ -303,5 +303,4 @@ http://127.0.0.1:8088/
 hadoop-3.4.0/sbin/stop-all.sh
 
 mapred --daemon stop historyserver
-
 ``` 
