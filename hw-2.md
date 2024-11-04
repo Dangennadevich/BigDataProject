@@ -5,8 +5,11 @@
 ```sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/nn```
 
 2. (team:jn) Меняем базовую конфигурацию для nn (Порт который слушаем и 
-порт 
-куда транслируем)
+порт куда транслируем)
+
+```
+sudo nano /etc/nginx/sites-available/nn
+```
 
 ```
 server {
@@ -64,13 +67,14 @@ server {
 }
 ``` 
 
-3. (team:jn) Включаем nginx для nn, перезапускаем nginx. Nginx Должен 
-стать 
-доступным локально по адресу jump node: http://176.109.91.20:9870/
+3.1 (team:jn) Включаем nginx для nn, перезапускаем nginx. UI hdfs Должен 
+стать доступным локально после прокидывания тунеля к jump node, доступен будет тут: http://127.0.0.1:9870/
 
 ```sudo ln -s /etc/nginx/sites-available/nn /etc/nginx/sites-enabled/nn```
 
 ```sudo systemctl reload nginx```
+
+```ssh -f -N -L 9870:176.109.91.20:9870 hadoop@176.109.91.20```
 
 
 4. (hadoop:nn) Настраиваем конфиг mapreduce 
