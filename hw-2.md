@@ -1,5 +1,11 @@
 ## ДЗ - 2
 
+0. (local terminal -> team:jn) Для того, чтобы мы могли перенаправить трафик с локальной машины на jump node
+
+```
+ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -L 8088:176.109.91.20:8088 team@176.109.91.20
+```
+
 1. (team:jn) Настраиваем конфиг для nginx -  копируем базовые настройкм
 
 ```sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/nn```
