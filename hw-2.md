@@ -309,4 +309,7 @@ http://127.0.0.1:8088/
 hadoop-3.4.0/sbin/stop-all.sh
 
 mapred --daemon stop historyserver
+
+# если не получилось сразу
+sudo kill -9 <PID>
 ``` 
