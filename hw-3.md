@@ -23,9 +23,9 @@
 ```hdfs dfs -chmod g+w /user/hive/warehouse```
 ```hdfs dfs -chmod g+w /tmp```
 
-6. (hadoop:jn) Копируем конфиг
+<!-- 6. (hadoop:jn) Копируем конфиг
 
-```cp apache-hive-4.0.1-bin/conf/hive-default.xml.template apache-hive-4.0.1-bin/conf/hive-site.xml```
+```cp apache-hive-4.0.1-bin/conf/hive-default.xml.template apache-hive-4.0.1-bin/conf/hive-site.xml``` -->
 
 7. (hadoop:jn) Редактируем конфиг
 
@@ -35,7 +35,7 @@
 ```
   <property>
     <name>hive.metastore.warehouse.dir</name>
-    <value>/user/hive/warehouse</value>
+    <value>hdfs://team-18-nn:9000/user/hive/warehouse</value>
     <description>Defines the rewrite policy, the valid values are those defined in RewritePolicy enum</description>
   </property>
   <property>
@@ -155,3 +155,13 @@ export PATH=$PATH:$HIVE_HOME/bin
 20. (hadoop:jn) Запускаем hiveserver2
 
 ```hive --hiveconf hive.server2.enable.doAs=false --hiveconf hive.secruty.authorization.enable=false --service hiveserver2 1>> /tmp/hs2.log 2>> /tmp/hs2.log &```
+
+todo конфиг обновить (c hdfs)
+
+21. (hadoop:jn) Подключение к beeline
+
+```beeline -u jdbc:hive2://team-18-jn:5433```
+
+22. (jdbc:hive2://team-18-jn:5433>) Создаем БД
+
+```CREATE DATABASE test_2;```
