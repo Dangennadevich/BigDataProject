@@ -39,7 +39,7 @@
     <description>Defines the rewrite policy, the valid values are those defined in RewritePolicy enum</description>
   </property>
 ```
-
+listen_addresses = 'team-18-nn'  
 8. (hadoop:jn) Скопируем env файл из теймплейта
 
 ```cp apache-hive-4.0.1-bin/conf/hive-env.sh.template apache-hive-4.0.1-bin/conf/hive-env.sh```
@@ -67,3 +67,37 @@ export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib/*
 ```CREATE USER hive with password 'hive';```
 ```GRANT ALL PRIVILEGES ON DATABASE "metastore" to hive;```
 ```ALTER DATABASE metastore OWNER TO hive;```
+
+13. (team:nn) Редактируем конфиг постреса, заменим значение listen_addresses
+
+```sudo vim /etc/postgresql/16/main/postgresql.conf```
+
+```listen_addresses = 'team-18-nn'```     
+
+14. (team:nn) Редактируем конфиг постреса, заменим IPv4 local connections (разрешим доступ только с jn)
+
+```
+sudo vim /etc/postgresql/16/main/pg_hba.conf
+```
+
+```
+IPv4 local connections 
+host    metastore             hive             176.109.91.20/32            password
+```
+
+15. (team:nn) Перезапускаем postgres
+
+```
+sudo systemctl restart postgresql
+```
+
+15. (team:nn) Перезапускаем postgres
+```
+sudo apt install postgresql
+```
+
+16. (team:jn) Устанавливаем клиент postgres
+
+```
+sudo apt install postgresql-client-16
+```

@@ -116,7 +116,9 @@ team-18-dn-01
 ```sudo nano /etc/hosts```
 
 для `team-18-nn`
+
 ```
+192.168.1.75 team-18-nn
 192.168.1.76 team-18-dn-00
 192.168.1.77 team-18-dn-01
 ```
