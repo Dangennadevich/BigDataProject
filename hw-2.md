@@ -65,8 +65,7 @@ server {
 ``` 
 
 3. (team:jn) Включаем nginx для nn, перезапускаем nginx. Nginx Должен 
-стать 
-доступным локально по адресу jump node: http://176.109.91.20:9870/
+стать доступным локально по адресу jump node: http://176.109.91.20:9870/  
 
 ```sudo ln -s /etc/nginx/sites-available/nn /etc/nginx/sites-enabled/nn```
 
@@ -90,8 +89,7 @@ nano hadoop-3.4.0/etc/hadoop/mapred-site.xml
         </property>
         <property>
                 <name>mapreduce.application.classpath</name>
-                
-<value>$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*</value>
+                <value>$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*</value>
         </property>
 </configuration>
 ```
@@ -115,8 +113,7 @@ nano hadoop-3.4.0/etc/hadoop/yarn-site.xml
         </property>
         <property>
                 <name>yarn.nodemanager.env-whitelist</name>
-                
-<value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
+                <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
         </property>
 </configuration>
 ```
@@ -124,13 +121,9 @@ nano hadoop-3.4.0/etc/hadoop/yarn-site.xml
 6. (hadoop:nn) Скопируем конфиги на dn-00 dn-01
 
 ```
-scp hadoop-3.4.0/etc/hadoop/mapred-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/mapred-site.xml
-
-scp hadoop-3.4.0/etc/hadoop/mapred-site.xml hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/mapred-site.xml
-
-
-scp hadoop-3.4.0/etc/hadoop/yarn-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/yarn-site.xml
-
+scp hadoop-3.4.0/etc/hadoop/mapred-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/mapred-site.xml && \
+scp hadoop-3.4.0/etc/hadoop/mapred-site.xml hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/mapred-site.xml && \
+scp hadoop-3.4.0/etc/hadoop/yarn-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/yarn-site.xml && \
 scp hadoop-3.4.0/etc/hadoop/yarn-site.xml hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/yarn-site.xml
 ```
 
