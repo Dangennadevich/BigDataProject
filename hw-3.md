@@ -112,9 +112,7 @@ export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib/*
 
 14. (team:nn) Редактируем конфиг постреса, добавим IPv4 local connections (разрешим доступ только с jn)
 
-```
-sudo vim /etc/postgresql/16/main/pg_hba.conf
-```
+```sudo vim /etc/postgresql/16/main/pg_hba.conf```
 
 ```
 IPv4 local connections 
@@ -123,14 +121,10 @@ host    metastore             hive             192.168.1.74/32            passwo
 
 15. (team:nn) Перезапускаем postgres
 
-```
-sudo systemctl restart postgresql
-```
+```sudo systemctl restart postgresql```
 
 15. (team:nn) Перезапускаем postgres
-```
-sudo apt install postgresql
-```
+```sudo apt install postgresql```
 
 16. (team:jn) Устанавливаем клиент postgres
 
@@ -171,56 +165,53 @@ todo конфиг обновить (c hdfs)
 
 22. (jdbc:hive2://team-18-jn:5433>) Создаем БД
 
-```CREATE DATABASE test_2;```
+```CREATE DATABASE project;```
 
 23. (hadoop:jn) Создаем директорию `input` в hdfs и меняем права доступа
 
-```
-hdfs dfs -mkdir /input
-```
-```
-hdfs dfs -chmod g+w /input
-```
+```hdfs dfs -mkdir /input```
 
-24. (hadoop:jn) Добавляем предварительно загруженный на jump node csv файл
+```hdfs dfs -chmod g+w /input```
+
+24. (hadoop:jn) Удаляем поле с названием столбцов и добавляем предварительно загруженный на jump node .csv файл
+
 ```
-hdfs dfs -put date_weeks_mapping.csv /input
+sed -i '1d' customers-2000000.csv
+hdfs dfs -put customers-2000000.csv /input
 ```
 
 25. (hadoop:jn) Подключаемся к клиенту Hive
 
-```
-beeline -u jdbc:hive2://tmpl-jn:5433
-```
+```beeline -u jdbc:hive2://team-18-jn:5433```
 
 Выполняем последовательно команды:
 
-- создаем таблицу week_dates_mapping в БД test_2
+- создаем таблицу customers в БД project
+
 ```
-CREATE TABLE IF NOT EXISTS test_2.week_dates_mapping (
-    dt string,
-    week_start string,
-    week_end string,
-    week_day string)
+CREATE TABLE IF NOT EXISTS project.customers (
+    customer_id string,
+    first_name string,
+    last_name string,
+    city string,
+    country string,
+    phone1 string,
+    phone2 string,
+    email string,
+    subscription_date string,
+    website string,
+    sum_purchase string)
     ROW FORMAT DELIMITED FIELDS TERMINATED BY ';';
 ```
 
 - Проверяем ее наличие
-```
-SHOW TABLES;
-```
 
-```
-DESCRIBE test_2.week_dates_mapping;
-```
+```DESCRIBE project.customers;```
 
 - Загружаем в нее данные, которые были загружены в csv файле
-```
-LOAD DATA INPATH '/input/date_weeks_mapping.csv' INTO TABLE test_2.week_dates_mapping;
-# LOAD DATA INPATH '/home/hadoop/date_weeks_mapping.csv' INTO TABLE test_2.week_dates_mapping;
-```
+
+```LOAD DATA INPATH '/input/customers-2000000.csv' INTO TABLE project.customers;```
 
 - Проверим, что данные были загружены в полном объеме
-```
-SELECT COUNT(*) FROM test_2.week_dates_mapping
-```
+```SELECT COUNT(*) FROM project.customers;```
+```SELECT * FROM project.customers LIMIT 1;```
