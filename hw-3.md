@@ -128,13 +128,12 @@ host    metastore             hive             192.168.1.74/32            passwo
 
 16. (team:jn) Устанавливаем клиент postgres
 
-```
-sudo apt install postgresql-client-16
-```
+```sudo apt install postgresql-client-16```
 
 17. (hadoop:jn) Скачиваем драйвер postgresql
 
-``cd apache-hive-4.0.1-bin/lib``
+```cd apache-hive-4.0.1-bin/lib```
+
 ```wget https://jdbc.postgresql.org/download/postgresql-42.7.4.jar```
 
 18. (hadoop:jn) Добавить переменные окруженния в ~/.profile
@@ -213,5 +212,7 @@ CREATE TABLE IF NOT EXISTS project.customers (
 ```LOAD DATA INPATH '/input/customers-2000000.csv' INTO TABLE project.customers;```
 
 - Проверим, что данные были загружены в полном объеме
+
 ```SELECT COUNT(*) FROM project.customers;```
+
 ```SELECT * FROM project.customers LIMIT 1;```
