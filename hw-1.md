@@ -1,5 +1,11 @@
 ## ДЗ - 1
 
+0. (local terminal -> team:jn) Для того, чтобы мы могли перенаправить трафик с локальной машины на jump node
+
+```
+ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -L 8088:176.109.91.20:8088 10002:176.109.91.20:10002 team@176.109.91.20
+```
+
 1. Создаем пользователя hadoop без прав sudo
 
 ```sudo adduser hadoop```
@@ -138,13 +144,13 @@ team-18-dn-01
 18. Скопируем созданные файлы на дата ноды
 
 ```
+scp hadoop-3.4.0/etc/hadoop/core-site.xml hadoop@192.168.1.74:/home/hadoop/hadoop-3.4.0/etc/hadoop/core-site.xml && \
 scp hadoop-3.4.0/etc/hadoop/core-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/core-site.xml && \
 scp hadoop-3.4.0/etc/hadoop/core-site.xml hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/core-site.xml && \
 scp hadoop-3.4.0/etc/hadoop/hdfs-site.xml hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/hdfs-site.xml && \
 scp hadoop-3.4.0/etc/hadoop/hdfs-site.xml hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/hdfs-site.xml && \
 scp hadoop-3.4.0/etc/hadoop/workers hadoop@192.168.1.76:/home/hadoop/hadoop-3.4.0/etc/hadoop/workers && \
 scp hadoop-3.4.0/etc/hadoop/workers hadoop@192.168.1.77:/home/hadoop/hadoop-3.4.0/etc/hadoop/workers
-
 ```
 
 18. Форматируем файловую систему NameNode

@@ -1,5 +1,12 @@
 ## ДЗ - 3
 
+
+0. (local terminal -> team:jn) Для того, чтобы мы могли перенаправить трафик с локальной машины на jump node
+
+```
+ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -L 8088:176.109.91.20:8088 10002:176.109.91.20:10002 team@176.109.91.20
+```
+
 1. (hadoop:jn) Скачиваем дистрибутив Hive 4.0.1 на jump node 
 
 ```wget https://dlcdn.apache.org/hive/hive-4.0.1/apache-hive-4.0.1-bin.tar.gz```
@@ -165,3 +172,55 @@ todo конфиг обновить (c hdfs)
 22. (jdbc:hive2://team-18-jn:5433>) Создаем БД
 
 ```CREATE DATABASE test_2;```
+
+23. (hadoop:jn) Создаем директорию `input` в hdfs и меняем права доступа
+
+```
+hdfs dfs -mkdir /input
+```
+```
+hdfs dfs -chmod g+w /input
+```
+
+24. (hadoop:jn) Добавляем предварительно загруженный на jump node csv файл
+```
+hdfs dfs -put date_weeks_mapping.csv /input
+```
+
+25. (hadoop:jn) Подключаемся к клиенту Hive
+
+```
+beeline -u jdbc:hive2://tmpl-jn:5433
+```
+
+Выполняем последовательно команды:
+
+- создаем таблицу week_dates_mapping в БД test_2
+```
+CREATE TABLE IF NOT EXISTS test_2.week_dates_mapping (
+    dt string,
+    week_start string,
+    week_end string,
+    week_day string)
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY ';';
+```
+
+- Проверяем ее наличие
+```
+SHOW TABLES;
+```
+
+```
+DESCRIBE test_2.week_dates_mapping;
+```
+
+- Загружаем в нее данные, которые были загружены в csv файле
+```
+LOAD DATA INPATH '/input/date_weeks_mapping.csv' INTO TABLE test_2.week_dates_mapping;
+# LOAD DATA INPATH '/home/hadoop/date_weeks_mapping.csv' INTO TABLE test_2.week_dates_mapping;
+```
+
+- Проверим, что данные были загружены в полном объеме
+```
+SELECT COUNT(*) FROM test_2.week_dates_mapping
+```
