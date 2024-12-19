@@ -75,7 +75,7 @@ ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -
     <description>Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary'.</description>
   </property>
 ```
-listen_addresses = 'team-18-nn'  
+
 8. (hadoop:jn) Скопируем env файл из теймплейта
 
 ```cp apache-hive-4.0.1-bin/conf/hive-env.sh.template apache-hive-4.0.1-bin/conf/hive-env.sh```
