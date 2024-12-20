@@ -2,8 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from onetl.connection import SparkHDFS
 from onetl.file import FileDFReader
-from onetl.db import DBWriter
-from onetl.connection import Hive
+import subprocess
 from onetl.file.format import CSV, Parquet
 
 spark = SparkSession.builder \
@@ -27,7 +26,6 @@ print(df.count())
 print(df.rdd.getNumPartitions())
 df.write.mode("overwrite").parquet("/input/customers_data")
 
-import subprocess
 result = subprocess.run(["hadoop", "fs", "-ls", "/input/customers_data"], capture_output=True, text=True)
 print(result.stdout)
 
