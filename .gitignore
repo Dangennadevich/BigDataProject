@@ -1,3 +1,4 @@
 create_data.ipynb
 customers-2000000.csv
-localfile.txt
+*.DS_Store
+.idea/
