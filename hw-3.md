@@ -3,9 +3,7 @@
 
 0. (local terminal -> team:jn) Для того, чтобы мы могли перенаправить трафик с локальной машины на jump node
 
-```
-ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -L 8088:176.109.91.20:8088 10002:176.109.91.20:10002 team@176.109.91.20
-```
+```ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -L 8088:176.109.91.20:8088 10002:176.109.91.20:10002 team@176.109.91.20```
 
 1. (hadoop:jn) Скачиваем дистрибутив Hive 4.0.1 на jump node 
 
@@ -18,16 +16,19 @@ ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -
 3. (hadoop:jn) Добавим переменную окружения HIVE_HOME и PATH
 
 ```export HIVE_HOME=/home/hadoop/apache-hive-4.0.1-bin```
+
 ```export PATH=$HIVE_HOME/bin:$PATH```
 
 4. (hadoop:jn -> hadoop:nn) Создаем директорию в hdfs
 
 ```ssh 192.168.1.75```
+
 ```hdfs dfs -mkdir -p /user/hive/warehouse```
 
 5. (hadoop:nn) Выдаем нужные права на директории в hdfs
 
 ```hdfs dfs -chmod g+w /user/hive/warehouse```
+
 ```hdfs dfs -chmod g+w /tmp```
 
 <!-- 6. (hadoop:jn) Копируем конфиг
@@ -75,7 +76,7 @@ ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -
     <description>Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary'.</description>
   </property>
 ```
-listen_addresses = 'team-18-nn'  
+
 8. (hadoop:jn) Скопируем env файл из теймплейта
 
 ```cp apache-hive-4.0.1-bin/conf/hive-env.sh.template apache-hive-4.0.1-bin/conf/hive-env.sh```
@@ -112,9 +113,7 @@ export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib/*
 
 14. (team:nn) Редактируем конфиг постреса, добавим IPv4 local connections (разрешим доступ только с jn)
 
-```
-sudo vim /etc/postgresql/16/main/pg_hba.conf
-```
+```sudo vim /etc/postgresql/16/main/pg_hba.conf```
 
 ```
 IPv4 local connections 
@@ -123,24 +122,19 @@ host    metastore             hive             192.168.1.74/32            passwo
 
 15. (team:nn) Перезапускаем postgres
 
-```
-sudo systemctl restart postgresql
-```
+```sudo systemctl restart postgresql```
 
 15. (team:nn) Перезапускаем postgres
-```
-sudo apt install postgresql
-```
+```sudo apt install postgresql```
 
 16. (team:jn) Устанавливаем клиент postgres
 
-```
-sudo apt install postgresql-client-16
-```
+```sudo apt install postgresql-client-16```
 
 17. (hadoop:jn) Скачиваем драйвер postgresql
 
-``cd apache-hive-4.0.1-bin/lib``
+```cd apache-hive-4.0.1-bin/lib```
+
 ```wget https://jdbc.postgresql.org/download/postgresql-42.7.4.jar```
 
 18. (hadoop:jn) Добавить переменные окруженния в ~/.profile
@@ -171,56 +165,55 @@ todo конфиг обновить (c hdfs)
 
 22. (jdbc:hive2://team-18-jn:5433>) Создаем БД
 
-```CREATE DATABASE test_2;```
+```CREATE DATABASE project;```
 
 23. (hadoop:jn) Создаем директорию `input` в hdfs и меняем права доступа
 
-```
-hdfs dfs -mkdir /input
-```
-```
-hdfs dfs -chmod g+w /input
-```
+```hdfs dfs -mkdir /input```
 
-24. (hadoop:jn) Добавляем предварительно загруженный на jump node csv файл
+```hdfs dfs -chmod g+w /input```
+
+24. (hadoop:jn) Удаляем поле с названием столбцов и добавляем предварительно загруженный на jump node .csv файл
+
 ```
-hdfs dfs -put date_weeks_mapping.csv /input
+sed -i '1d' customers-2000000.csv
+hdfs dfs -put customers-2000000.csv /input
 ```
 
 25. (hadoop:jn) Подключаемся к клиенту Hive
 
-```
-beeline -u jdbc:hive2://tmpl-jn:5433
-```
+```beeline -u jdbc:hive2://team-18-jn:5433```
 
 Выполняем последовательно команды:
 
-- создаем таблицу week_dates_mapping в БД test_2
+- создаем таблицу customers в БД project
+
 ```
-CREATE TABLE IF NOT EXISTS test_2.week_dates_mapping (
-    dt string,
-    week_start string,
-    week_end string,
-    week_day string)
+CREATE TABLE IF NOT EXISTS project.customers (
+    customer_id string,
+    first_name string,
+    last_name string,
+    city string,
+    country string,
+    phone1 string,
+    phone2 string,
+    email string,
+    subscription_date string,
+    website string,
+    sum_purchase string)
     ROW FORMAT DELIMITED FIELDS TERMINATED BY ';';
 ```
 
 - Проверяем ее наличие
-```
-SHOW TABLES;
-```
 
-```
-DESCRIBE test_2.week_dates_mapping;
-```
+```DESCRIBE project.customers;```
 
 - Загружаем в нее данные, которые были загружены в csv файле
-```
-LOAD DATA INPATH '/input/date_weeks_mapping.csv' INTO TABLE test_2.week_dates_mapping;
-# LOAD DATA INPATH '/home/hadoop/date_weeks_mapping.csv' INTO TABLE test_2.week_dates_mapping;
-```
+
+```LOAD DATA INPATH '/input/customers-2000000.csv' INTO TABLE project.customers;```
 
 - Проверим, что данные были загружены в полном объеме
-```
-SELECT COUNT(*) FROM test_2.week_dates_mapping
-```
+
+```SELECT COUNT(*) FROM project.customers;```
+
+```SELECT * FROM project.customers LIMIT 1;```
