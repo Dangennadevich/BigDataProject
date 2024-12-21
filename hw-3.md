@@ -3,9 +3,7 @@
 
 0. (local terminal -> team:jn) Для того, чтобы мы могли перенаправить трафик с локальной машины на jump node
 
-```
-ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -L 8088:176.109.91.20:8088 10002:176.109.91.20:10002 team@176.109.91.20
-```
+```ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -L 8088:176.109.91.20:8088 10002:176.109.91.20:10002 team@176.109.91.20```
 
 1. (hadoop:jn) Скачиваем дистрибутив Hive 4.0.1 на jump node 
 
@@ -18,16 +16,19 @@ ssh -i .ssh/id_ed25519 -L 9870:176.109.91.20:9870 -L 19888:176.109.91.20:19888 -
 3. (hadoop:jn) Добавим переменную окружения HIVE_HOME и PATH
 
 ```export HIVE_HOME=/home/hadoop/apache-hive-4.0.1-bin```
+
 ```export PATH=$HIVE_HOME/bin:$PATH```
 
 4. (hadoop:jn -> hadoop:nn) Создаем директорию в hdfs
 
 ```ssh 192.168.1.75```
+
 ```hdfs dfs -mkdir -p /user/hive/warehouse```
 
 5. (hadoop:nn) Выдаем нужные права на директории в hdfs
 
 ```hdfs dfs -chmod g+w /user/hive/warehouse```
+
 ```hdfs dfs -chmod g+w /tmp```
 
 <!-- 6. (hadoop:jn) Копируем конфиг
