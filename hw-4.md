@@ -22,6 +22,7 @@
 ```scp customers-2000000.csv team@176.109.91.20```
 
 - (jn:team) Копируем датасет для пользователя hadoop
+
 ```scp customers-2000000.csv hadoop@192.168.1.74```
 
 1. (jn:hadoop) Создаем папку для Spark и скачиваем архив 
